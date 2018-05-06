@@ -43,6 +43,6 @@
 <code>public static String decode(String path) throws IOException, NotFoundException</code><br/>
 <br/>
 
-<h3>注意：</h3><br/>
-<span stype="color:red">二维码存储的内容和解析出的内容直接转换成字符串了，默认使用的是UTF-8编码，要是二维码中保存汉字会其他字符的时候根据需要修改编码。</span><br/>
+<h3>注意：</h3>
+<span style="color:read">二维码存储的内容和解析出的内容直接转换成字符串了，默认使用的是UTF-8编码，要是二维码中保存汉字会其他字符的时候根据需要修改编码。</span><br/>
 
