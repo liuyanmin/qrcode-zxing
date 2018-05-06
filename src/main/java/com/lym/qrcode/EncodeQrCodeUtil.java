@@ -39,10 +39,12 @@ public class EncodeQrCodeUtil {
      * @param width 二维码宽
      * @param height 二维码高
      * @param logoImgPath logo
+     * @param logoWidth logo图片宽
+     * @param logoHeight logo图片高
      * @param needCompress logo是否压缩
      * @return BufferedImage
      */
-    public static BufferedImage createQrCode(String content, int width, int height, String logoImgPath, boolean needCompress) throws WriterException, IOException {
+    public static BufferedImage createQrCode(String content, int width, int height, String logoImgPath, Integer logoWidth, Integer logoHeight, boolean needCompress) throws WriterException, IOException {
         Map<EncodeHintType, Object> hints = new ConcurrentHashMap<>();
         // 二维码容错等级
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
@@ -69,7 +71,7 @@ public class EncodeQrCodeUtil {
         }
 
         // 插入logo图片
-        EncodeQrCodeUtil.insertImage(image, logoImgPath, needCompress);
+        EncodeQrCodeUtil.insertImage(image, logoImgPath, logoWidth, logoHeight, needCompress);
 
         return image;
     }
@@ -79,10 +81,12 @@ public class EncodeQrCodeUtil {
      * 插入LOGO
      * @param source 原二维码
      * @param logoImgPath logo
+     * @param logoWidth logo宽
+     * @param logoHeight logo高
      * @param needCompress 是否需要压缩logo
      * @throws IOException
      */
-    private static void insertImage(BufferedImage source, String logoImgPath, boolean needCompress) throws IOException {
+    private static void insertImage(BufferedImage source, String logoImgPath, Integer logoWidth, Integer logoHeight, boolean needCompress) throws IOException {
         File file = new File(logoImgPath);
         if (!file.exists()) {
             return;
@@ -91,6 +95,14 @@ public class EncodeQrCodeUtil {
         Image src = ImageIO.read(file);
         int width = src.getWidth(null);
         int height = src.getHeight(null);
+
+        // 使用指定的logo大小
+        if (logoWidth != null && logoWidth > 0) {
+            width = logoWidth;
+        }
+        if (logoHeight != null && logoHeight > 0) {
+            height = logoHeight;
+        }
 
         // 压缩logo
         if (needCompress) {
@@ -115,7 +127,25 @@ public class EncodeQrCodeUtil {
 
 
     /**
-     * 生成带logo的二维码
+     * 生成带logo的二维码（指定logo宽高）
+     * @param content
+     * @param width
+     * @param height
+     * @param logoImgPath
+     * @param destPath
+     * @param needCompress
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static void encode(String content, int width, int height, String logoImgPath, Integer logoWidth, Integer logoHeight, String destPath, boolean needCompress) throws WriterException, IOException {
+        BufferedImage image = EncodeQrCodeUtil.createQrCode(content, width, height, logoImgPath, logoWidth, logoHeight, needCompress);
+        FileUtil.mkdirs(destPath);
+        ImageIO.write(image, FORMAT, new File(destPath));
+    }
+
+
+    /**
+     * 生成带logo的二维码（不指定logo宽高，使用logo默认宽高）
      * @param content
      * @param width
      * @param height
@@ -126,7 +156,7 @@ public class EncodeQrCodeUtil {
      * @throws IOException
      */
     public static void encode(String content, int width, int height, String logoImgPath, String destPath, boolean needCompress) throws WriterException, IOException {
-        BufferedImage image = EncodeQrCodeUtil.createQrCode(content, width, height, logoImgPath, needCompress);
+        BufferedImage image = EncodeQrCodeUtil.createQrCode(content, width, height, logoImgPath, null, null, needCompress);
         FileUtil.mkdirs(destPath);
         ImageIO.write(image, FORMAT, new File(destPath));
     }
@@ -147,7 +177,24 @@ public class EncodeQrCodeUtil {
 
 
     /**
-     * 生成带logo的二维码，并输出到指定的输出流
+     * 生成带logo的二维码，并输出到指定的输出流（指定logo宽高）
+     * @param content
+     * @param width
+     * @param height
+     * @param logoImgPath
+     * @param output
+     * @param needCompress
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static void encode(String content, int width, int height, String logoImgPath, Integer logoWidth, Integer logoHeight, OutputStream output, boolean needCompress) throws WriterException, IOException {
+        BufferedImage image = EncodeQrCodeUtil.createQrCode(content, width, height, logoImgPath, logoWidth, logoHeight, needCompress);
+        ImageIO.write(image, FORMAT, output);
+    }
+
+
+    /**
+     * 生成带logo的二维码，并输出到指定的输出流（不指定logo宽高）
      * @param content
      * @param width
      * @param height
@@ -158,7 +205,7 @@ public class EncodeQrCodeUtil {
      * @throws IOException
      */
     public static void encode(String content, int width, int height, String logoImgPath, OutputStream output, boolean needCompress) throws WriterException, IOException {
-        BufferedImage image = EncodeQrCodeUtil.createQrCode(content, width, height, logoImgPath, needCompress);
+        BufferedImage image = EncodeQrCodeUtil.createQrCode(content, width, height, logoImgPath, null, null, needCompress);
         ImageIO.write(image, FORMAT, output);
     }
 

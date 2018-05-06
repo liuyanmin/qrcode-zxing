@@ -26,11 +26,28 @@ public class EncodeQrCodeUtilTest {
         directory = logoPath.substring(0, logoPath.lastIndexOf(File.separator) + 1);
     }
 
+    /**
+     * 生成二维码，指定二维码的宽高和logo的宽高
+     * @throws IOException
+     * @throws WriterException
+     */
     @Test
     public void testEncode() throws IOException, WriterException {
         String content = "https://github.com/liuyanmin";
         String destPath = directory + "qrcode.png";
-        EncodeQrCodeUtil.encode(content, 300, 300, logoPath, destPath, true);
+        EncodeQrCodeUtil.encode(content, 300, 300, logoPath, 80, 80, destPath, true);
+    }
+
+    /**
+     * 生成二维码，指定二维码的宽高，不指定logo的宽高
+     * @throws IOException
+     * @throws WriterException
+     */
+    @Test
+    public void  testEncode2() throws IOException, WriterException {
+        String content = "https://github.com/liuyanmin";
+        String destPath = directory + "qrcode.png";
+        EncodeQrCodeUtil.encode(content, 300, 300, logoPath, null, null, destPath, true);
     }
 
 }
